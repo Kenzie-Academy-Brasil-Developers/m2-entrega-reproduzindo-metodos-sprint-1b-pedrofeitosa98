@@ -20,10 +20,9 @@ function newMap(array, callback) {
 function newFilter(array, callback) {
     const arrayResult = []
     for(let i = 0; i < array.length; i++){
-        if (callback(array[i], i, array) === true) {
+        if (callback(array[i], i, array)) {
             arrayResult.push(array[i])
         }
-        else {}
     }
     return arrayResult
 }
@@ -32,13 +31,11 @@ function newFilter(array, callback) {
 // 4. find
 function newFind(array, callback) {
     for(let i = 0; i < array.length; i++){
-        if (callback(array[i], i, array) === true) {
+        if (callback(array[i], i, array)) {
             return array[i]
         }
-        else {
-            return undefined
-        }
     }
+    return undefined
 }
 
 
@@ -48,7 +45,6 @@ function newIndexOf(array, value, from = 0) {
         if(value === array[i]){
             return i
         }
-        else{}
     }
     return '-1'
 }
@@ -60,27 +56,106 @@ function newIncludes(array, value, from = 0) {
         if(value === array[i]){
             return true
         }
-        else{}
     }
     return false
 }
 
 
 // 7. reduce
-function newReduce(array, callback) {
-    let previous = array[0]
-    let current
-    let result
-    if(typeof previous === "string"){result = ''}
-    else if(typeof previous === "number"){result = 0}
-    for(let i = 1; i < array.length; i += 2){
-        previous = array[i-1]
-        current = array[i]
-        if(previous !== undefined){
-            result += callback(previous, current)
-        }
-        else {}
+function newReduce(array, callback, comeca) {
+    let acumulador = array[0]
+    if(comeca !== undefined){
+        acumulador = comeca
     }
-    if(array.length % 2 === 0){return result}
-    else{return result + array[array.length -1]}
+
+    for (let i = comeca ? 0 : 1; i < array.length; i++) {
+        acumulador = callback(acumulador, array[i])
+    }
+    
+    return acumulador
+}
+
+
+// - EXTRAS
+// 1. findIndex
+function newFindIndex(array, callback) {
+    for(let i = 0; i < array.length; i++){
+        if (callback(array[i], i, array)) {
+            return i
+        }
+    }
+    return undefined
+}
+
+
+// 2. some
+function newSome(array, callback) {
+    for(let i = 0; i < array.length; i++){
+        if (callback(array[i], i, array)) {
+            return true
+        }
+    }
+    return false
+}
+
+
+// 3. every
+function newEvery(array, callback) {
+    for(let i = 0; i < array.length; i++){
+        if (callback(array[i], i, array) === false) {
+            return false
+        }
+    }
+    return true
+}
+
+
+// 4. concat
+function newConcat(array, concatArray) {
+    let arrayResult = []
+    for(let i = 0; i < array.length; i++){
+        arrayResult.push(array[i])
+    }
+    for(let i = 0; i < concatArray.length; i++){
+        arrayResult.push(concatArray[i])
+    }
+    return arrayResult
+}
+
+
+// 5. join
+function newJoin(array, separator) {
+    let string = ''
+    if (separator === undefined){
+        separator = ','
+    }
+
+    for(let i = 0; i < array.length; i++){
+        if (i === (array.length - 1)){
+            string = string + array[i]
+        }
+        else {
+            string = string + array[i] + separator
+        }
+    }
+
+    return string
+}
+
+
+// 6. slice
+function newSlice(array, start, end) {
+    let arrayResult = []
+    if(end === undefined){
+        end = array.length
+    }
+    if(start === undefined){
+        arrayResult = array
+        return arrayResult
+    }
+    for(i = start; i < end; i++){
+        arrayResult.push(array[i])
+    }
+
+    return arrayResult    
 }
